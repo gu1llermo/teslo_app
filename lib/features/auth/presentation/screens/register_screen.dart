@@ -82,11 +82,11 @@ class _RegisterForm extends ConsumerWidget {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 50),
       child: Column(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        // mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          const SizedBox(height: 5),
+          const Spacer(flex: 2),
           Text('Nueva cuenta', style: textStyles.titleMedium),
-          const SizedBox(height: 5),
+          const Spacer(flex: 2),
           CustomTextFormField(
             label: 'Nombre completo',
             keyboardType: TextInputType.name,
@@ -95,7 +95,7 @@ class _RegisterForm extends ConsumerWidget {
                 ? registerForm.fullName.errorMessage
                 : null,
           ),
-          const SizedBox(height: 5),
+          const Spacer(),
           CustomTextFormField(
             label: 'Correo',
             keyboardType: TextInputType.emailAddress,
@@ -104,7 +104,7 @@ class _RegisterForm extends ConsumerWidget {
                 ? registerForm.email.errorMessage
                 : null,
           ),
-          const SizedBox(height: 5),
+          const Spacer(),
           CustomTextFormField(
             label: 'Contraseña',
             obscureText: true,
@@ -113,7 +113,7 @@ class _RegisterForm extends ConsumerWidget {
                 ? registerForm.password.errorMessage
                 : null,
           ),
-          const SizedBox(height: 5),
+          const Spacer(),
           CustomTextFormField(
             label: 'Repita la contraseña',
             obscureText: true,
@@ -123,7 +123,7 @@ class _RegisterForm extends ConsumerWidget {
                 ? registerForm.repeatPassword.errorMessage
                 : null,
           ),
-          const SizedBox(height: 10),
+          const Spacer(),
           SizedBox(
               width: double.infinity,
               height: 60,
@@ -134,7 +134,7 @@ class _RegisterForm extends ConsumerWidget {
                   ref.read(registerFormProvider.notifier).onFormSubmit();
                 },
               )),
-          const SizedBox(height: 10),
+          const Spacer(flex: 3),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
@@ -149,6 +149,7 @@ class _RegisterForm extends ConsumerWidget {
                   child: const Text('Ingresa aquí'))
             ],
           ),
+          const Spacer(flex: 2),
         ],
       ),
     );
