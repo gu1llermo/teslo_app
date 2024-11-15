@@ -76,9 +76,11 @@ class _LoginForm extends ConsumerWidget {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 50),
       child: Column(
-        mainAxisAlignment: MainAxisAlignment.spaceAround,
+        // mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: [
+          const Spacer(flex: 2),
           Text('Login', style: textStyles.titleLarge),
+          const Spacer(flex: 2),
           CustomTextFormField(
             label: 'Correo',
             keyboardType: TextInputType.emailAddress,
@@ -86,6 +88,7 @@ class _LoginForm extends ConsumerWidget {
             errorMessage:
                 loginForm.isFormPosted ? loginForm.email.errorMessage : null,
           ),
+          const Spacer(),
           CustomTextFormField(
             label: 'Contraseña',
             obscureText: true,
@@ -93,6 +96,7 @@ class _LoginForm extends ConsumerWidget {
             errorMessage:
                 loginForm.isFormPosted ? loginForm.password.errorMessage : null,
           ),
+          const Spacer(),
           SizedBox(
               width: double.infinity,
               height: 60,
@@ -103,6 +107,7 @@ class _LoginForm extends ConsumerWidget {
                   ref.read(loginFormProvider.notifier).onFormSubmit();
                 },
               )),
+          const Spacer(flex: 3),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
@@ -112,6 +117,7 @@ class _LoginForm extends ConsumerWidget {
                   child: const Text('Crea una aquí'))
             ],
           ),
+          const Spacer(flex: 2),
         ],
       ),
     );

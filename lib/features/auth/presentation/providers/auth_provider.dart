@@ -51,14 +51,6 @@ class AuthNotifier extends StateNotifier<AuthState> {
 
   Future<void> checkAuthStatus(String token) async {}
 
-  Future<void> logout([String? errorMessage]) async {
-    //todo: limpiar token
-    state = state.copyWith(
-        user: null,
-        authStatus: AuthStatus.notAuthenticated,
-        errorMessage: errorMessage);
-  }
-
   void _setLoggedUser(User user) {
     // todo: necesito guardar el token físicamente
     state = state.copyWith(
@@ -66,6 +58,14 @@ class AuthNotifier extends StateNotifier<AuthState> {
       authStatus: AuthStatus.authenticated,
       errorMessage: '',
     );
+  }
+
+  Future<void> logout([String? errorMessage]) async {
+    //todo: limpiar token
+    state = state.copyWith(
+        user: null,
+        authStatus: AuthStatus.notAuthenticated,
+        errorMessage: errorMessage);
   }
 }
 
