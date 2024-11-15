@@ -18,10 +18,13 @@ class AuthNotifier extends StateNotifier<AuthState> {
   AuthNotifier({
     required this.authRepository,
     required this.keyValueStorageService,
-  }) : super(AuthState());
+  }) : super(AuthState()) {
+    checkAuthStatus();
+  }
+
   final AuthRepository authRepository;
   final KeyValueStorageService keyValueStorageService;
-  static const String token = 'token';
+  static const String _token = 'token';
 
   Future<void> loginUser(String email, String password) async {
     await Future.delayed(const Duration(milliseconds: 500));
@@ -61,11 +64,25 @@ class AuthNotifier extends StateNotifier<AuthState> {
     }
   }
 
-  Future<void> checkAuthStatus(String token) async {}
+  Future<void> checkAuthStatus() async {
+    // verificamos si tenemos un token
+    final token = await keyValueStorageService.getValue<String>(_token);
+    if (token == null) return logout();
+    try {
+      final user = await authRepository.checkAuthStatus(token);
+      _setLoggedUser(user);
+    }
+    // on CustomError catch (e) {
+    //   logout(e.errorMessage);
+    // }
+    catch (e) {
+      logout();
+    }
+  }
 
   Future<void> _setLoggedUser(User user) async {
     // Guardamos el token físicamente
-    await keyValueStorageService.setKeyValue<String>(token, user.token);
+    await keyValueStorageService.setKeyValue<String>(_token, user.token);
     state = state.copyWith(
       user: user,
       authStatus: AuthStatus.authenticated,
@@ -75,7 +92,7 @@ class AuthNotifier extends StateNotifier<AuthState> {
 
   Future<void> logout([String? errorMessage]) async {
     // limpiar token
-    keyValueStorageService.removeKey(token);
+    keyValueStorageService.removeKey(_token);
     state = state.copyWith(
         user: null,
         authStatus: AuthStatus.notAuthenticated,
