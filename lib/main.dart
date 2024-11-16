@@ -7,12 +7,14 @@ Future<void> main() async {
   runApp(const ProviderScope(child: MainApp()));
 }
 
-class MainApp extends StatelessWidget {
+class MainApp extends ConsumerWidget {
   const MainApp({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    // debugPrint(Environment.apiUrl);
+  Widget build(BuildContext context, WidgetRef ref) {
+    // como estamos dentro de un build y está leyendo su valor,
+    // recomiendan usar el watch
+    final appRouter = ref.watch(goRouterProvider);
     return MaterialApp.router(
       routerConfig: appRouter,
       theme: AppTheme().getTheme(),
