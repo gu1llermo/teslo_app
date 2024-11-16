@@ -7,6 +7,7 @@ class UserMapper {
         fullName: json['fullName'],
         roles: List<String>.from(json['roles']),
         // roles: List<String>.from(json['roles'].map((role) => role)),
-        token: json['token'],
+        token: json['token'] ??
+            '', // si no viene el token le colocamos un String vacío
       );
 }
