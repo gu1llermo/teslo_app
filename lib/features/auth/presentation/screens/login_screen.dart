@@ -76,33 +76,41 @@ class _LoginForm extends ConsumerWidget {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 50),
       child: Column(
-        mainAxisAlignment: MainAxisAlignment.spaceAround,
+        // mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: [
+          const Spacer(flex: 2),
           Text('Login', style: textStyles.titleLarge),
+          const Spacer(flex: 2),
           CustomTextFormField(
             label: 'Correo',
             keyboardType: TextInputType.emailAddress,
+            textInputAction: TextInputAction.next,
             onChanged: ref.read(loginFormProvider.notifier).onEmailChange,
             errorMessage:
                 loginForm.isFormPosted ? loginForm.email.errorMessage : null,
           ),
+          const Spacer(),
           CustomTextFormField(
             label: 'Contraseña',
             obscureText: true,
             onChanged: ref.read(loginFormProvider.notifier).onPasswordChange,
+            onFieldSubmitted: (value) =>
+                ref.read(loginFormProvider.notifier).onFormSubmit(),
             errorMessage:
                 loginForm.isFormPosted ? loginForm.password.errorMessage : null,
           ),
+          const Spacer(),
           SizedBox(
               width: double.infinity,
               height: 60,
               child: CustomFilledButton(
                 text: 'Ingresar',
                 buttonColor: Colors.black,
-                onPressed: () {
-                  ref.read(loginFormProvider.notifier).onFormSubmit();
-                },
+                onPressed: loginForm.isPosting
+                    ? null
+                    : ref.read(loginFormProvider.notifier).onFormSubmit,
               )),
+          const Spacer(flex: 3),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
@@ -112,6 +120,7 @@ class _LoginForm extends ConsumerWidget {
                   child: const Text('Crea una aquí'))
             ],
           ),
+          const Spacer(flex: 2),
         ],
       ),
     );

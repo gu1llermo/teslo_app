@@ -1,4 +1,3 @@
-//! 1 - State del provider
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:formz/formz.dart';
 import 'package:teslo_app/features/auth/presentation/providers/providers.dart';
@@ -35,9 +34,22 @@ class LoginFormNotifier extends StateNotifier<LoginFormState> {
   Future<void> onFormSubmit() async {
     _touchEveryField();
     if (!state.isValid) return;
-    // si todo está bien hago print del state
-    //debugPrint(state.toString());
+
+    // está haciendo esto con la finalidad deshabilitar el botón de posteo
+    // para que el usuario no presione dos veces ó ingrese dos veces
+    // al mismo tiempo, es como una medida de seguridad
+    state = state.copyWith(isPosting: true);
+
     await loginUser(state.email.value, state.password.value);
+
+    Future.delayed(
+      Duration(seconds: 1),
+      () {
+        if (mounted) {
+          state = state.copyWith(isPosting: false);
+        }
+      },
+    );
   }
 
   void _touchEveryField() {

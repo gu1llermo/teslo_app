@@ -75,10 +75,19 @@ class RegisterFormNotifier extends StateNotifier<RegisterFormState> {
     if (!state.isValid) return;
     // si todo está bien hago print del state
     //debugPrint(state.toString());
+    state = state.copyWith(isPosting: true);
     await registerUser(
       state.email.value,
       state.password.value,
       state.fullName.value,
+    );
+    Future.delayed(
+      Duration(seconds: 1),
+      () {
+        if (mounted) {
+          state = state.copyWith(isPosting: false);
+        }
+      },
     );
   }
 
