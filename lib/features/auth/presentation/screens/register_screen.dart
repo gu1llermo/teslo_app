@@ -90,6 +90,7 @@ class _RegisterForm extends ConsumerWidget {
           CustomTextFormField(
             label: 'Nombre completo',
             keyboardType: TextInputType.name,
+            textInputAction: TextInputAction.next,
             onChanged: ref.read(registerFormProvider.notifier).onFullNameChange,
             errorMessage: registerForm.isFormPosted
                 ? registerForm.fullName.errorMessage
@@ -99,6 +100,7 @@ class _RegisterForm extends ConsumerWidget {
           CustomTextFormField(
             label: 'Correo',
             keyboardType: TextInputType.emailAddress,
+            textInputAction: TextInputAction.next,
             onChanged: ref.read(registerFormProvider.notifier).onEmailChange,
             errorMessage: registerForm.isFormPosted
                 ? registerForm.email.errorMessage
@@ -108,6 +110,7 @@ class _RegisterForm extends ConsumerWidget {
           CustomTextFormField(
             label: 'Contraseña',
             obscureText: true,
+            textInputAction: TextInputAction.next,
             onChanged: ref.read(registerFormProvider.notifier).onPasswordChange,
             errorMessage: registerForm.isFormPosted
                 ? registerForm.password.errorMessage

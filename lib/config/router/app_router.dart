@@ -56,7 +56,9 @@ final goRouterProvider = Provider<GoRouter>((ref) {
       if (authStatus == AuthStatus.authenticated) {
         // es importante hacer éstas comprobaciones, porque el usuario es posible que llegue
         // por un deep link
-        if (isGoingTo == '/login' || isGoingTo == '/register') {
+        if (isGoingTo == '/login' ||
+            isGoingTo == '/register' ||
+            isGoingTo == '/splash') {
           // lo mandamos a la ruta principal, porque ya está autenticado
           return '/';
         }

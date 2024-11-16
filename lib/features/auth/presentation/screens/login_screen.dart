@@ -84,6 +84,7 @@ class _LoginForm extends ConsumerWidget {
           CustomTextFormField(
             label: 'Correo',
             keyboardType: TextInputType.emailAddress,
+            textInputAction: TextInputAction.next,
             onChanged: ref.read(loginFormProvider.notifier).onEmailChange,
             errorMessage:
                 loginForm.isFormPosted ? loginForm.email.errorMessage : null,

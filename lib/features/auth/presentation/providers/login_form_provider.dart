@@ -43,7 +43,14 @@ class LoginFormNotifier extends StateNotifier<LoginFormState> {
 
     await loginUser(state.email.value, state.password.value);
 
-    state = state.copyWith(isPosting: false);
+    Future.delayed(
+      Duration(seconds: 1),
+      () {
+        if (mounted) {
+          state = state.copyWith(isPosting: false);
+        }
+      },
+    );
   }
 
   void _touchEveryField() {

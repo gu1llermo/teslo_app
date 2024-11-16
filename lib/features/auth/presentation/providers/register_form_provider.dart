@@ -81,7 +81,14 @@ class RegisterFormNotifier extends StateNotifier<RegisterFormState> {
       state.password.value,
       state.fullName.value,
     );
-    state = state.copyWith(isPosting: false);
+    Future.delayed(
+      Duration(seconds: 1),
+      () {
+        if (mounted) {
+          state = state.copyWith(isPosting: false);
+        }
+      },
+    );
   }
 
   void _touchEveryField() {
