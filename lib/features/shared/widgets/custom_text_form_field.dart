@@ -6,7 +6,7 @@ class CustomTextFormField extends StatelessWidget {
   final String? errorMessage;
   final bool obscureText;
   final TextInputType? keyboardType;
-  final Function(String)? onChanged;
+  final void Function(String)? onChanged;
   final String? Function(String?)? validator;
   final TextInputAction? textInputAction;
   final void Function(String)? onFieldSubmitted;
