@@ -120,6 +120,9 @@ class _RegisterForm extends ConsumerWidget {
           CustomTextFormField(
             label: 'Repita la contraseña',
             obscureText: true,
+            onFieldSubmitted: (value) {
+              ref.read(registerFormProvider.notifier).onFormSubmit();
+            },
             onChanged:
                 ref.read(registerFormProvider.notifier).onRepeatPasswordChange,
             errorMessage: registerForm.isFormPosted
