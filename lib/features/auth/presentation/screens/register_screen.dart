@@ -130,9 +130,9 @@ class _RegisterForm extends ConsumerWidget {
               child: CustomFilledButton(
                 text: 'Crear',
                 buttonColor: Colors.black,
-                onPressed: () {
-                  ref.read(registerFormProvider.notifier).onFormSubmit();
-                },
+                onPressed: registerForm.isPosting
+                    ? null
+                    : ref.read(registerFormProvider.notifier).onFormSubmit,
               )),
           const Spacer(flex: 3),
           Row(
