@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:teslo_app/features/products/presentation/providers/providers.dart';
+import 'package:teslo_app/features/products/presentation/widgets/widgets.dart';
 import 'package:teslo_app/features/shared/shared.dart';
 
 class ProductsScreen extends StatelessWidget {
@@ -62,12 +63,14 @@ class __ProductsViewState extends ConsumerState<_ProductsView> {
       child: MasonryGridView.count(
         physics: BouncingScrollPhysics(),
         crossAxisCount: 2,
-        mainAxisSpacing: 20,
-        crossAxisSpacing: 35,
+        mainAxisSpacing: 10,
+        crossAxisSpacing: 10,
         itemCount: productsState.products.length,
         itemBuilder: (context, index) {
           final product = productsState.products[index];
-          return Text(product.title);
+          return ProductCard(
+            product: product,
+          );
         },
       ),
     );
