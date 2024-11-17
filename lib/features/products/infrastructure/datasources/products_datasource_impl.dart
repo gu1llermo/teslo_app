@@ -36,9 +36,10 @@ class ProductsDatasourceImpl extends ProductsDatasource {
       },
     );
     final List<Product> products = [];
-    for (final product in response.data ?? []) {
+    for (final jsonProduct in response.data ?? []) {
       // aquí vá el mapper
-      products.add(ProductMapper.jsonToEntity(product));
+      final product = ProductMapper.jsonToEntity(jsonProduct);
+      products.add(product);
     }
 
     return products;
