@@ -37,6 +37,12 @@ final goRouterProvider = Provider<GoRouter>((ref) {
         path: '/',
         builder: (context, state) => const ProductsScreen(),
       ),
+      GoRoute(
+        path: '/product/:id',
+        builder: (context, state) => ProductScreen(
+          productId: state.pathParameters['id'] ?? 'no-id',
+        ),
+      ),
     ],
     redirect: (context, state) {
       // con esto se validan todas las rutas, porque todas pasan por aqui
