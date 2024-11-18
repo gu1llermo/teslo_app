@@ -197,6 +197,8 @@ class _ImageGallery extends StatelessWidget {
                 child: Image.network(
                   e,
                   fit: BoxFit.cover,
+                  errorBuilder: (context, child, stackTrace) =>
+                      CircularProgressIndicator(),
                 ),
               );
             }).toList(),
