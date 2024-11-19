@@ -18,37 +18,92 @@ class ProductScreen extends ConsumerWidget {
         .showSnackBar(const SnackBar(content: Text('Producto actualizado')));
   }
 
+  void showCenterOverlay(BuildContext context) {
+    final overlay = Overlay.of(context);
+
+    final overlayEntry = OverlayEntry(
+      builder: (context) => Center(
+        child: Material(
+          color: Colors.transparent,
+          child: Container(
+            width: 300,
+            height: 150,
+            padding: const EdgeInsets.all(20),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(20),
+              boxShadow: const [
+                BoxShadow(
+                  color: Colors.black26,
+                  blurRadius: 10,
+                  spreadRadius: 2,
+                ),
+              ],
+            ),
+            child: const Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Icon(
+                  Icons.check_circle,
+                  color: Colors.green,
+                  size: 60,
+                ),
+                SizedBox(height: 10),
+                Text(
+                  'Product has been updated',
+                  style: TextStyle(fontSize: 18),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+
+    overlay.insert(overlayEntry);
+
+    Future.delayed(const Duration(seconds: 2), () {
+      overlayEntry.remove();
+    });
+  }
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final productState = ref.watch(productProvider(productId));
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Editar Producto'),
-        actions: [
-          IconButton(onPressed: () {}, icon: Icon(Icons.camera_alt_outlined))
-        ],
-      ),
-      body: productState.isLoading
-          ? FullScreenLoader()
-          : _ProductView(
-              product: productState.product!,
-            ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          if (productState.product == null) return;
-          ref
-              .read(productFormProvider(productState.product!).notifier)
-              .onFormSubmit()
-              .then(
-            (value) {
-              // en realidad me gusta enterarme qué pasó
-              if (!value) return; // no me gusta que no haga nada
-
-              showSnackbar(context);
-            },
-          );
-        },
-        child: Icon(Icons.save_as_outlined),
+    return GestureDetector(
+      onTap: () => FocusScope.of(context).unfocus(),
+      child: Scaffold(
+        appBar: AppBar(
+          title: Text('Editar Producto'),
+          actions: [
+            IconButton(onPressed: () {}, icon: Icon(Icons.camera_alt_outlined))
+          ],
+        ),
+        body: productState.isLoading
+            ? FullScreenLoader()
+            : _ProductView(
+                product: productState.product!,
+              ),
+        floatingActionButton: FloatingActionButton(
+          onPressed: () {
+            if (productState.product == null) return;
+            ref
+                .read(productFormProvider(productState.product!).notifier)
+                .onFormSubmit()
+                .then(
+              (value) {
+                // en realidad me gusta enterarme qué pasó
+                if (!value || !context.mounted) {
+                  return; // no me gusta que no haga nada
+                }
+                // Hago la validación del mounted por seguridad
+                // para evitar un posible fallo al usar el context
+                showCenterOverlay(context);
+              },
+            );
+          },
+          child: Icon(Icons.save_as_outlined),
+        ),
       ),
     );
   }
@@ -202,6 +257,7 @@ class _SizeSelector extends StatelessWidget {
       }).toList(),
       selected: Set.from(selectedSizes),
       onSelectionChanged: (newSelection) {
+        FocusScope.of(context).unfocus();
         onSizesChanged(List.from(newSelection));
         //debugPrint(newSelection.toString());
       },
@@ -238,6 +294,7 @@ class _GenderSelector extends StatelessWidget {
         }).toList(),
         selected: {selectedGender},
         onSelectionChanged: (newSelection) {
+          FocusScope.of(context).unfocus();
           onGenderChanged(newSelection.first);
           //debugPrint(newSelection.toString());
         },

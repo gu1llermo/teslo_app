@@ -46,7 +46,7 @@ class ProductFormNotifier extends StateNotifier<ProductFormState> {
     if (onSubmitCallback == null) return false;
     // éste es el objeto que tenbemos que mandarle al backend
     final productLike = {
-      'id': state.id,
+      'id': state.id == 'new' ? null : state.id,
       'title': state.title.value,
       'price': double.tryParse(state.price.value) ??
           0.0, // claro yo tengo todo protegido
