@@ -4,20 +4,25 @@ import 'package:teslo_app/config/config.dart';
 
 import '../../../../shared/shared.dart';
 import '../../../domain/domain.dart';
+import '../providers.dart';
 
 final productFormProvider = StateNotifierProvider.autoDispose
     .family<ProductFormNotifier, ProductFormState, Product>((ref, product) {
-  // todo: createUpdateCallback
+  final createUpdateCallback =
+      ref.watch(productsProvider.notifier).createOrUpdateProduct;
+  // final createUpdateCallback =
+  //     ref.watch(productRepositoryProvider).createUpdateProduct;
 
   return ProductFormNotifier(
     product: product,
-    // onSubmitCallback:
+    onSubmitCallback: createUpdateCallback,
   );
 });
 
 class ProductFormNotifier extends StateNotifier<ProductFormState> {
   // Lo llama ProductLike, porque es algo que luce como un producto
-  final void Function(Map<String, dynamic> productLike)? onSubmitCallback;
+  final Future<bool> Function(Map<String, dynamic> productLike)?
+      onSubmitCallback;
 
   ProductFormNotifier({
     this.onSubmitCallback,
@@ -43,22 +48,27 @@ class ProductFormNotifier extends StateNotifier<ProductFormState> {
     final productLike = {
       'id': state.id,
       'title': state.title.value,
-      'price': state.price.value,
+      'price': double.tryParse(state.price.value) ??
+          0.0, // claro yo tengo todo protegido
+      // para nunca me genere un error en la conversión, pero de todas formas
+      // le coloco ésta protección
       'description': state.description,
       'slug': state.slug.value,
-      'stock': state.inStock.value,
+      'stock': int.tryParse(state.inStock.value) ?? 0,
       'sizes': state.sizes,
       'gender': state.gender,
-      'tags': state.tags.split(','),
+      'tags': state.tags.split(',').map((e) => e.trim()).toList(),
       'images': state.images
           .map((image) =>
               image.replaceAll('${Environment.apiUrl}/files/product/', ''))
           .toList()
     };
-
-    //todo: llamar onSubmitCallback
-
-    return true;
+    try {
+      return await onSubmitCallback!(productLike);
+      // si todo sale bien return true
+    } catch (e) {
+      return false;
+    }
   }
 
   void _touchEveryThing() {
