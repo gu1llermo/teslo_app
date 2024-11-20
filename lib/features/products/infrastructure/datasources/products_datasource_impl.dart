@@ -37,6 +37,20 @@ class ProductsDatasourceImpl extends ProductsDatasource {
   }
 
   @override
+  Future<void> deleteProduct(String id) async {
+    try {
+      await dio.delete('/products/$id');
+    } on DioException catch (e) {
+      // si entra aquí siempre se tiene a e.response
+      if (e.response!.statusCode == 404) throw ProductNotFound();
+      // sino lanzamos ésta excepción y según Fernando esto vá en cascada
+      throw Exception();
+    } catch (e) {
+      throw Exception();
+    }
+  }
+
+  @override
   Future<Product> getProductById(String id) async {
     try {
       final response = await dio.get('/products/$id');

@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
+import 'package:teslo_app/config/router/app_router.dart';
 import 'package:teslo_app/features/products/presentation/providers/providers.dart';
 
 import '../../../shared/widgets/widgets.dart';
@@ -18,7 +20,8 @@ class ProductScreen extends ConsumerWidget {
         .showSnackBar(const SnackBar(content: Text('Producto actualizado')));
   }
 
-  void showCenterOverlay(BuildContext context) {
+  void showCenterOverlay(BuildContext context,
+      {required String message, required Icon icon}) {
     final overlay = Overlay.of(context);
 
     final overlayEntry = OverlayEntry(
@@ -40,17 +43,13 @@ class ProductScreen extends ConsumerWidget {
                 ),
               ],
             ),
-            child: const Column(
+            child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                Icon(
-                  Icons.check_circle,
-                  color: Colors.green,
-                  size: 60,
-                ),
+                icon,
                 SizedBox(height: 10),
                 Text(
-                  'Product has been updated',
+                  message,
                   style: TextStyle(fontSize: 18),
                 ),
               ],
@@ -70,6 +69,7 @@ class ProductScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final productState = ref.watch(productProvider(productId));
+    //debugPrint(productId);
     return GestureDetector(
       onTap: () => FocusScope.of(context).unfocus(),
       child: Scaffold(
@@ -84,25 +84,70 @@ class ProductScreen extends ConsumerWidget {
             : _ProductView(
                 product: productState.product!,
               ),
-        floatingActionButton: FloatingActionButton(
-          onPressed: () {
-            if (productState.product == null) return;
-            ref
-                .read(productFormProvider(productState.product!).notifier)
-                .onFormSubmit()
-                .then(
-              (value) {
-                // en realidad me gusta enterarme qué pasó
-                if (!value || !context.mounted) {
-                  return; // no me gusta que no haga nada
-                }
-                // Hago la validación del mounted por seguridad
-                // para evitar un posible fallo al usar el context
-                showCenterOverlay(context);
+        floatingActionButton: Column(
+          mainAxisAlignment: MainAxisAlignment.end,
+          children: [
+            FloatingActionButton(
+              heroTag: 'save',
+              onPressed: () {
+                if (productState.product == null) return;
+                ref
+                    .read(productFormProvider(productState.product!).notifier)
+                    .onFormSubmit()
+                    .then(
+                  (value) {
+                    // en realidad me gusta enterarme qué pasó
+                    if (!value || !context.mounted) {
+                      return; // no me gusta que no haga nada
+                    }
+                    // Hago la validación del mounted por seguridad
+                    // para evitar un posible fallo al usar el context
+                    showCenterOverlay(context,
+                        message: 'Product has been updated',
+                        icon: Icon(
+                          Icons.check_circle,
+                          color: Colors.green,
+                          size: 60,
+                        ));
+                  },
+                );
               },
-            );
-          },
-          child: Icon(Icons.save_as_outlined),
+              child: Icon(Icons.save_as_outlined),
+            ),
+            const SizedBox(height: 10),
+            FloatingActionButton(
+              heroTag: 'delete',
+              onPressed: () {
+                if (productState.product == null) return;
+                ref
+                    .read(productFormProvider(productState.product!).notifier)
+                    .deleteProduct(productId)
+                    .then(
+                  (value) {
+                    // en realidad me gusta enterarme qué pasó
+                    if (!value || !context.mounted) {
+                      return; // no me gusta que no haga nada
+                    }
+                    // Hago la validación del mounted por seguridad
+                    // para evitar un posible fallo al usar el context
+
+                    showCenterOverlay(context,
+                        message: 'Product successfully removed!',
+                        icon: Icon(
+                          Icons.check_circle,
+                          color: Colors.red,
+                          size: 60,
+                        ));
+                    context.pop();
+                  },
+                );
+              },
+              child: Icon(
+                Icons.delete_forever_outlined,
+                color: Colors.red,
+              ),
+            ),
+          ],
         ),
       ),
     );

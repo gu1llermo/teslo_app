@@ -10,12 +10,13 @@ final productFormProvider = StateNotifierProvider.autoDispose
     .family<ProductFormNotifier, ProductFormState, Product>((ref, product) {
   final createUpdateCallback =
       ref.watch(productsProvider.notifier).createOrUpdateProduct;
-  // final createUpdateCallback =
-  //     ref.watch(productRepositoryProvider).createUpdateProduct;
+  final deleteProductCallback =
+      ref.watch(productsProvider.notifier).deleteProduct;
 
   return ProductFormNotifier(
     product: product,
     onSubmitCallback: createUpdateCallback,
+    deleteProductCallback: deleteProductCallback,
   );
 });
 
@@ -23,9 +24,11 @@ class ProductFormNotifier extends StateNotifier<ProductFormState> {
   // Lo llama ProductLike, porque es algo que luce como un producto
   final Future<bool> Function(Map<String, dynamic> productLike)?
       onSubmitCallback;
+  final Future<bool> Function(String)? deleteProductCallback;
 
   ProductFormNotifier({
     this.onSubmitCallback,
+    this.deleteProductCallback,
     required Product product,
   }) : super(ProductFormState(
           id: product.id,
@@ -39,6 +42,16 @@ class ProductFormNotifier extends StateNotifier<ProductFormState> {
           description: product.description,
           images: product.images,
         ));
+
+  Future<bool> deleteProduct(String id) async {
+    if (deleteProductCallback == null) return false;
+    try {
+      return await deleteProductCallback!(id);
+      // si todo sale bien return true
+    } catch (e) {
+      return false;
+    }
+  }
 
   Future<bool> onFormSubmit() async {
     _touchEveryThing();

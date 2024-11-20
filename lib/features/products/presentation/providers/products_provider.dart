@@ -39,6 +39,19 @@ class ProductsNotifier extends StateNotifier<ProductsState> {
     }
   }
 
+  Future<bool> deleteProduct(String id) async {
+    try {
+      await productsRepository.deleteProduct(id);
+      state = state.copyWith(
+          products:
+              state.products.where((product) => product.id != id).toList());
+
+      return true;
+    } catch (e) {
+      return false;
+    }
+  }
+
   Future<void> loadNextPage() async {
     if (state.isLoading || state.isLastPage) return;
     state = state.copyWith(isLoading: true);
