@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:go_router/go_router.dart';
-import 'package:teslo_app/config/router/app_router.dart';
 import 'package:teslo_app/features/products/presentation/providers/providers.dart';
 import 'package:teslo_app/features/products/presentation/widgets/widgets.dart';
 import 'package:teslo_app/features/shared/shared.dart';
@@ -28,7 +27,9 @@ class ProductsScreen extends StatelessWidget {
       floatingActionButton: FloatingActionButton.extended(
         label: const Text('Nuevo producto'),
         icon: const Icon(Icons.add),
-        onPressed: () {},
+        onPressed: () {
+          context.push('/product/new');
+        },
       ),
     );
   }
@@ -81,6 +82,7 @@ class __ProductsViewState extends ConsumerState<_ProductsView> {
       child: MasonryGridView.count(
         physics: BouncingScrollPhysics(),
         controller: scrollController,
+        padding: const EdgeInsets.only(bottom: 100),
         crossAxisCount: 2,
         mainAxisSpacing: 10,
         crossAxisSpacing: 10,

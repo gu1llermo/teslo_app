@@ -24,4 +24,9 @@ class ProductsRepositoryImpl extends ProductsRepository {
   Future<List<Product>> searchProductByTerm(String term) {
     return datasource.searchProductByTerm(term);
   }
+
+  @override
+  Future<void> deleteProduct(String id) {
+    return datasource.deleteProduct(id);
+  }
 }

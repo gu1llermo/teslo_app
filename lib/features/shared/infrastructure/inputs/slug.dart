@@ -25,7 +25,7 @@ class Slug extends FormzInput<String, SlugError> {
   // Override validator to handle validating a given input value.
   @override
   SlugError? validator(String value) {
-    value = value.trim();
+    //value = value.trim();
     if (value.isEmpty) return SlugError.empty;
     // aquí recomienda usar una expresión regular, pero lo vamos a solventar así
     // por los momentos
