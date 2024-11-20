@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:http_parser/http_parser.dart';
 import 'package:teslo_app/config/config.dart';
 import 'package:teslo_app/features/products/domain/domain.dart';
 
@@ -13,6 +14,46 @@ class ProductsDatasourceImpl extends ProductsDatasource {
           'Authorization': 'Bearer $accesToken',
         }));
 
+  Future<String> _uploadFile(String path) async {
+    try {
+      final fileName = path.split('/').last;
+      final contentType = path.split('.').last;
+
+      final FormData data = FormData.fromMap({
+        'file': MultipartFile.fromFileSync(path,
+            filename: fileName,
+            // implementé ésta opción porque aunque no me generó error,
+            // hubo algunos que sí se les presentó error y solucionaron así
+            contentType: MediaType('image', contentType) // est
+            )
+      });
+
+      final response = await dio.post('/files/product', data: data);
+
+      return response.data['image'];
+    } catch (e) {
+      throw Exception();
+    }
+  }
+
+  Future<List<String>> uploadPhotos(List<String> photos) async {
+    // con esto identificamos las fotos que hay que subir
+    // si tiene un / en el nombre es que viene del file system
+    // pero aquí creo que es alrevés es slash, mejor coloco un breakpoint
+    // para evaluarlo
+    final photosToUpload =
+        photos.where((element) => element.contains('/')).toList();
+    final photosToIgnore =
+        photos.where((element) => !element.contains('/')).toList();
+
+    // todo: crear una serie de futures de carga de imágenes
+    final List<Future<String>> uploadJob =
+        photosToUpload.map((e) => _uploadFile(e)).toList();
+    final newImages = await Future.wait(uploadJob);
+
+    return [...photosToIgnore, ...newImages];
+  }
+
   @override
   Future<Product> createUpdateProduct(Map<String, dynamic> productLike) async {
     try {
@@ -23,6 +64,9 @@ class ProductsDatasourceImpl extends ProductsDatasource {
       final String url =
           productId == null ? '/products' : '/products/$productId';
       productLike.remove('id');
+
+      productLike['images'] = await uploadPhotos(productLike['images']);
+
       final response = await dio.request(
         url,
         data: productLike,

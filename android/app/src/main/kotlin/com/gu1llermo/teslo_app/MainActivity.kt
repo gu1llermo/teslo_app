@@ -1,4 +1,4 @@
-package com.example.teslo_app
+package com.gu1llermo.teslo_app
 
 import io.flutter.embedding.android.FlutterActivity
 
